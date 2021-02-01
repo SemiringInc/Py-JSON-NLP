@@ -155,6 +155,7 @@ def build_constituents(sent_id: int, s: str) -> dict:
 
 class MyOrderedDict(OrderedDict):
     """ """
+
     def __init__(self, *args, **kwargs):
         super(MyOrderedDict, self).__init__(*args, **kwargs)
 
@@ -222,11 +223,11 @@ class Token:
         self.propID = ""  # , omitempty - PropBank ID
         self.propIDProbability = -1.0  # , omitempty - PropBank ID probability
         self.frameID = -1  # , omitempty
-        self.frameID = -1.0  # , omitempty
+        self.frameIDProbability = -1.0  # , omitempty
         self.wordNetID = -1  # , omitempty
-        self.wordNetID = -1.0  # , omitempty
+        self.wordNetIDProbability = -1.0  # , omitempty
         self.verbNetID = -1  # , omitempty
-        self.verbNetID = -1.0  # , omitempty
+        self.verbNetIDProbability = -1.0  # , omitempty
         self.lang = ""  # , omitempty - "en"
         self.features = TokenFeatures  # , omitempty
         self.shape = ""  # , omitempty - "Xxxx"
@@ -262,6 +263,8 @@ class Clause:
         self.neg = -1  # bool, omitempty
         self.tense = ""  # string, omitempty
         self.mood = ""  # string, omitempty
+        self.perf = False  # bool
+        self.continuous = False  # bool
         self.aspect = ""  # string, omitempty
         self.voice = ""  # string, omitempty
         self.sentiment = ""  # string, omitempty
@@ -279,128 +282,117 @@ class Dependency:
 
 
 class DependencyTree:
-    """ """
+    """A dependency tree structure."""
 
     def __init__(self):
-        pass
-    # SentenceID   int          `json:"sentenceID"`
-    # Style        string       `json:"style,omitempty"`
-    # Dependencies []Dependency `json:"dependencies,omitempty"`
-    # Probability  float64      `json:"prob,omitempty"`
+        self.sentenceID = -1  # int          sentenceID"`
+        self.style = ""  # string       style,omitempty"`
+        self.dependencies = []  # []Dependency dependencies,omitempty"`
+        self.prob = -1.0  # float64      prob,omitempty"`
 
 
 class CoreferenceRepresentantive:
-    """ """
+    """The representation of coreference relations."""
 
     def __init__(self):
-        pass
-    # Tokens []int `json:"tokens"`
-    # Head   int   `json:"head,omitempty"`
+        self.tokens = []  # []int
+        self.head = -1  # int  omitempty
 
 
 class CoreferenceReferents:
     """ """
 
     def __init__(self):
-        pass
-    # Tokens      []int   `json:"tokens"`
-    # Head        int     `json:"head,omitempty"`
-    # Probability float64 `json:"prob,omitempty"`
+        self.tokens = []  # []int   `json:"tokens"`
+        self.head = -1  # int     `json:"head,omitempty"`
+        self.prob = -1.0  # float64 `json:"prob,omitempty"`
 
 
 class Coreference:
     """ """
 
     def __init__(self):
-        pass
-    # ID             int                        `json:"id"`
-    # Representative CoreferenceRepresentantive `json:"representative"`
-    # Referents      []CoreferenceReferents     `json:"referents"`
+        self.id = -1  # int json:"id"`
+        self.representative = None # CoreferenceRepresentantive `json:"representative"`
+        self.referents = []  # []CoreferenceReferents     `json:"referents"`
 
 
 class Scope:
     """ """
 
     def __init__(self):
-        pass
-    # ID         int   `json:"id"`
-    # Governor   []int `json:"gov"`
-    # Dependents []int `json:"dep,omitempty"`
-    # Terminals  []int `json:"terminals,omitempty"`
+        self.id = -1  # int   `json:"id"`
+        self.gov = []  #   []int `json:"gov"`
+        self.dep = []  # []int `json:"dep,omitempty"`
+        self.terminals = []  #  []int `json:"terminals,omitempty"`
 
 
 class ConstituentParse:
     """ """
 
     def __init__(self):
-        pass
-    # SentenceID        int     `json:"sentenceId"`
-    # Type              string  `json:"type,omitempty"`
-    # LabeledBracketing string  `json:"labeledBracketing"`
-    # Probability       float64 `json:"prob,omitempty"`
-    # Scopes            []Scope `json:"scopes,omitempty"`
+        self.sentenceId = -1  # int  sentenceId
+        self.type = ""  # string  omitempty
+        self.labeledBracketing = ""  # string  labeledBracketing
+        self.prob = -1.0  # float64  omitempty
+        self.scopes = []  # []Scope  omitempty
 
 
 class Expression:
     """ """
 
     def __init__(self):
-        pass
-    # ID          int     `json:"id"`
-    # Type        string  `json:"type,omitempty"` // "NP"
-    # Head        int     `json:"head,omitempty"`
-    # Dependency  string  `json:"dependency,omitempty"` // "nsubj"
-    # TokenFrom   int     `json:"tokenFrom,omitempty"`  // first token
-    # TokenTo     int     `json:"tokenTo,omitempty"`    // last token
-    # Tokens      []int   `json:"tokens"`
-    # Probability float64 `json:"prob,omitempty"`
+        self.id = -1  # int
+        self.type = ""  # string  omitempty  "NP"
+        self.head = -1  # int  omitempty
+        self.dependency = ""  # string  omitempty   "nsubj"
+        self.tokenFrom = -1  # int  omitempty  first token
+        self.tokenTo = -1  # int  omitempty   last token
+        self.tokens = []  # []int  tokens
+        self.prob = -1.0  # float64  omitempty
 
 
 class Paragraph:
     """ """
 
     def __init__(self):
-        pass
-    # ID        int   `json:"id"`
-    # TokenFrom int   `json:"tokenFrom,omitempty"`
-    # TokenTo   int   `json:"tokenTo,omitempty"`
-    # Tokens    []int `json:"tokens,omitempty"`
-    # Sentences []int `json:"sentences,omitempty"`
+        self.id = -1  # int
+        self.tokenFrom = -1  # int  omitempty
+        self.tokenTo = -1  # int  omitempty
+        self.tokens = []  # []int  omitempty
+        self.sentences = []  # []int  omitempty
 
 
 class Attribute:
     """ """
 
     def __init__(self):
-        pass
-    # Label string `json:"lab"`
-    # Value string `json:"val"`
+        self.lab = ""  # string
+        self.val = ""  # string
 
 
 class Entity:
     """ """
 
     def __init__(self):
-        pass
-    # ID                   int         `json:"id"`
-    # Label                string      `json:"label"`
-    # Type                 string      `json:"type"`
-    # Sentiment            string      `json:"sentiment,omitempty"`     //
-    # SentimentProbability float64     `json:"sentimentProb,omitempty"` //
-    # Attributes           []Attribute `json:"attributes"`
+        self.id = -1  # int
+        self.label = ""  # string      `json:"label"`
+        self.type = ""  # string      `json:"type"`
+        self.sentiment = ""  # string      `json:"sentiment,omitempty"`     //
+        self.sentimentProb = -1.0  # float64     `json:"sentimentProb,omitempty"` //
+        self.attributes = []  # []Attribute `json:"attributes"`
 
 
 class Relation:
     """ """
 
     def __init__(self):
-        pass
-    # ID                   int         `json:"id"`
-    # Label                string      `json:"label"`
-    # Type                 string      `json:"type"`
-    # Sentiment            string      `json:"sentiment,omitempty"`     //
-    # SentimentProbability float64     `json:"sentimentProb,omitempty"` //
-    # Attributes           []Attribute `json:"attributes"`
+        self.id = -1  # int
+        self.label = ""  # string
+        self.type = ""  # string
+        self.sentiment = ""  # string  omitempty
+        self.sentimentProbability = -1.0  # float64   omitempty
+        self.attributes = []  # []Attribute
 
 
 class Triple(OrderedDict):
@@ -521,6 +513,7 @@ class Triple(OrderedDict):
         return json.loads(json.dumps(OrderedDict([(k, v) for (k, v) in self.items() if v is not None]),
                                      default=lambda o: o.__dict__,
                                      indent=3))
+
 
 class Meta(MyOrderedDict):
     """ """
