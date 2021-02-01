@@ -1,6 +1,6 @@
 # Python JSON-NLP Module
 
-(C) 2020 by [Semiring Inc.]
+(C) 2020-2021 by [Semiring Inc.]
 
 Contributions from [Damir Cavar], [Oren Baldinger], [Maanvitha Gongalla], [Anurag Kumar], Murali Kammili, and others during 2019.
 
@@ -16,9 +16,9 @@ There is a growing number of Natural Language Processing (NLP) tools, modules, p
 
 [JSON-NLP] is a standard for the most important outputs NLP pipelines and components can generate. The relevant documentation can be found in the [JSON-NLP] GitHub repo and on its website at the [NLP-Lab] and [Semiring Inc.].
 
-The Python [JSON-NLP] module contains general mapping functions for [JSON-NLP] to [CoNLL-U], a validator for the generated output, an NLP pipeline interface (for [Flair], [spaCy], [NLTK], [Polyglot], [Xrenner], etc.), and various utility functions.
+The Python [JSON-NLP] module contains general mapping functions for [JSON-NLP] to [CoNLL-U], a validator for the generated output, an NLP pipeline interface (for [Flair], [spaCy], [NLTK], [Polyglot], [Xrenner], [Stanford CoreNLP] etc.), and various utility functions.
 
-There is a [Java JSON-NLP](https://github.com/dcavar/J-JSON-NLP) Maven module as well, and there are wrappers for numerous popular NLP pipelines and tools linked from the [NLP-Lab.org] website.
+There is a [Java JSON-NLP](https://github.com/dcavar/J-JSON-NLP) Maven module as well, there is a [Go implementation of a JSON-NLP wrapper](https://github.com/SemiringInc/GoJSONNLP), and there are wrappers for numerous popular NLP pipelines and tools linked from the [NLP-Lab.org] and [Semiring Inc.] websites.
 
 
 ## Installation
@@ -55,69 +55,6 @@ Currently we have a [CoNLL-U] to [JSON-NLP] converter, that covers most annotati
 To convert the other direction:
 
     pyjsonnlp.conversion.to_conllu(jsonnlp)
-
-
-## Pipeline
-
-[JSON-NLP] provides a simple `Pipeline` interface that should be implemented for embedding into a microservice:
-    
-    from collections import OrderedDict
-
-    class MockPipeline(pyjsonnlp.pipeline.Pipeline):
-        @staticmethod
-        def process(text='', coreferences=False, constituents=False, dependencies=False, expressions=False,
-                    **kwargs) -> OrderedDict: 
-            return OrderedDict()
-            
-The provided keyword arguments should be used to toggle on or off processing components within the method.        
-            
-If you have deployed a `Pipeline` as a microservice (see below), we provide a local endpoint for a remotely 
-deployed `Pipeline` via the `RemotePipeline` class:
-
-    pipeline = pyjsonnlp.pipeline.RemotePipeline('localhost', port=9000)
-    print(pipeline.process(text='I am a sentence', dependencies=True, something='else'), spacing=2)
-
-
-## Microservice
-
-The [JSON-NLP] as a Microservice class is only available in older versions of this module. Version 0.2.x is implemented as a Microsorvice with a pre-built implementation of [Flask].
-
-    from pyjsonnlp.microservices.flask_server import FlaskMicroservice
-
-    app = FlaskMicroservice(__name__, MyPipeline(), base_route='/')
- 
-We recommend creating a `server.py` with the `FlaskMicroservice` class, which extends the [Flask] app. A corresponding WSGI file would contain:
-
-    from mypipeline.server import app as application
-    
-To disable a pipeline component (such as phrase structure parsing), add
-
-    application.constituents = False
-    
-The full list of properties available that can be disabled or enabled are
-- constituents
-- dependencies
-- coreference
-- expressions
-
-The microservice exposes the following URIs:
-- /constituents
-- /dependencies
-- /coreference
-- /expressions
-- /token_list
-
-These URIs are shortcuts to disable the other components of the parse. In all cases, `tokenList` will be included in the `JSON-NLP` output. An example url is:
-
-    http://localhost:5000/dependencies?text=I am a sentence
-
-Text is provided to the microservice with the `text` parameter, via either `GET` or `POST`. If you pass `url` as a parameter, the microservice will scrape that url and process the text of the website.
-
-Other parameters specific to your pipeline implementation can be passed as well:
-
-    http://localhost:5000?lang=en&constituents=0&text=I am a sentence.
-
-The current version 0.6 or newer does not support the [Flask]-based RESTful Microservice infrastructure. It is a pure [JSON-NLP] data structure, processor and converter.
 
 
 
